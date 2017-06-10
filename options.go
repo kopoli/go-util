@@ -14,6 +14,11 @@ func GetOptions() Options {
 	return &options
 }
 
+// NewOptions returns a new Options structure
+func NewOptions() Options {
+	return &optionMap{}
+}
+
 var options = optionMap{
 	values: make(map[string]string),
 }
