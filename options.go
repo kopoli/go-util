@@ -11,17 +11,17 @@ type Options interface {
 
 // GetOptions gets the static options structure
 func GetOptions() Options {
-	return &options
+	return options
 }
 
 // NewOptions returns a new Options structure
 func NewOptions() Options {
-	return &optionMap{}
+	return &optionMap{
+		values: make(map[string]string),
+	}
 }
 
-var options = optionMap{
-	values: make(map[string]string),
-}
+var options = NewOptions()
 
 // optionMap implements the Options interface with a map
 type optionMap struct {
