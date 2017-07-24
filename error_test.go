@@ -55,8 +55,8 @@ func TestErrorList(t *testing.T) {
 		result  string
 	}{
 		{"Empty list", "empty", []testOp{}, ""},
-		{"One error", "one", []testOp{ ae("a") }, "Error: one: Error 1: a; "},
-		{"Two errors", "two", []testOp{ ae("a"), ae("b") }, "Error: two: Error 1: a; Error 2: b; "},
+		{"One error", "one", []testOp{ae("a")}, "Error: one: Error 1: a; "},
+		{"Two errors", "two", []testOp{ae("a"), ae("b")}, "Error: two: Error 1: a; Error 2: b; "},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

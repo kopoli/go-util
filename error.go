@@ -9,13 +9,13 @@ import (
 )
 
 type ErrorHandler struct {
-	Out io.Writer
+	Out             io.Writer
 	PrintStackTrace bool
 }
 
 // The default error handler
 var E = ErrorHandler{
-	Out: os.Stderr,
+	Out:             os.Stderr,
 	PrintStackTrace: true,
 }
 
@@ -39,7 +39,7 @@ func (e *ErrorHandler) Annotate(err error, a ...interface{}) error {
 // Print writes the error message to predefined io.Writer
 func (e *ErrorHandler) Print(err error, a ...interface{}) {
 	fmt.Fprint(e.Out, "Error: ")
-	if len (a) > 0 {
+	if len(a) > 0 {
 		fmt.Fprint(e.Out, a...)
 		fmt.Fprint(e.Out, ": ")
 	}
@@ -83,7 +83,7 @@ func (e *ErrorList) Error() string {
 	ret := "Error: " + e.Message + ": "
 
 	for i := range e.errors {
-		ret = ret + fmt.Sprintf("Error %d: %s; ", i + 1, e.errors[i])
+		ret = ret + fmt.Sprintf("Error %d: %s; ", i+1, e.errors[i])
 	}
 
 	return ret
