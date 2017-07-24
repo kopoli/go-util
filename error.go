@@ -55,3 +55,36 @@ func (e *ErrorHandler) Panic(err error, a ...interface{}) {
 	e.Print(err, a...)
 	panic("Irrecoverable error")
 }
+
+// ErrorList is a list of errors that can be printed in a single go
+type ErrorList struct {
+	Message string
+	errors  []error
+}
+
+// NewErrorList returns an initialized ErrorList
+func NewErrorList(message string) (ret *ErrorList) {
+	return &ErrorList{
+		Message: message,
+	}
+}
+
+// Append adds a new error to the list
+func (e *ErrorList) Append(err error) {
+	e.errors = append(e.errors, err)
+}
+
+// Error returns the error string generated from the list
+func (e *ErrorList) Error() string {
+	if len(e.errors) == 0 {
+		return ""
+	}
+
+	ret := "Error: " + e.Message + ": "
+
+	for i := range e.errors {
+		ret = ret + fmt.Sprintf("Error %d: %s; ", i + 1, e.errors[i])
+	}
+
+	return ret
+}
