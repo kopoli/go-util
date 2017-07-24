@@ -53,10 +53,11 @@ func TestErrorList(t *testing.T) {
 		message string
 		ops     []testOp
 		result  string
+		isEmpty bool
 	}{
-		{"Empty list", "empty", []testOp{}, ""},
-		{"One error", "one", []testOp{ae("a")}, "Error: one: Error 1: a; "},
-		{"Two errors", "two", []testOp{ae("a"), ae("b")}, "Error: two: Error 1: a; Error 2: b; "},
+		{"Empty list", "empty", []testOp{}, "", true},
+		{"One error", "one", []testOp{ae("a")}, "Error: one: Error 1: a; ", false},
+		{"Two errors", "two", []testOp{ae("a"), ae("b")}, "Error: two: Error 1: a; Error 2: b; ", false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -69,6 +70,10 @@ func TestErrorList(t *testing.T) {
 			gotRet := el.Error()
 			if !structEquals(gotRet, tt.result) {
 				t.Errorf("Expected error message differs:\n %s", diffStr(gotRet, tt.result))
+			}
+
+			if el.IsEmpty() != tt.isEmpty {
+				t.Errorf("Expected to be empty: \"%v\" Reported empty: \"%v\"", tt.isEmpty, el.IsEmpty())
 			}
 		})
 	}

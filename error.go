@@ -88,3 +88,8 @@ func (e *ErrorList) Error() string {
 
 	return ret
 }
+
+// IsEmpty returns true if the error list is empty
+func (e *ErrorList) IsEmpty() bool {
+	return len(e.errors) == 0
+}
