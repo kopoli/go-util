@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
@@ -22,6 +23,68 @@ func diffStr(a, b interface{}) (ret string) {
 
 	ret, _ = difflib.GetUnifiedDiffString(diff)
 	return
+}
+
+type ehOp interface {
+	run(*ErrorHandler, error) error
+}
+
+type ehFunc func(*ErrorHandler, error) error
+
+func (f ehFunc) run(eh *ErrorHandler, err error) error {
+	return f(eh, err)
+}
+
+func TestErrorHandler(t *testing.T) {
+	n := func(msg string) ehFunc {
+		return func(e *ErrorHandler, err error) error {
+			return e.New(msg)
+		}
+	}
+
+	a := func(msg string) ehFunc {
+		return func(e *ErrorHandler, err error) error {
+			return e.Annotate(err, msg)
+		}
+	}
+
+	type args struct {
+	}
+	tests := []struct {
+		name            string
+		ops             []ehOp
+		out             string
+		PrintStackTrace bool
+	}{
+		{"Simple error", []ehOp{n("first")}, "first", false},
+		{"Annotating error", []ehOp{n("first"), a("sec")}, "sec: first", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			buf := &bytes.Buffer{}
+			var err error = nil
+			e := &ErrorHandler{
+				Out:             buf,
+				PrintStackTrace: tt.PrintStackTrace,
+			}
+
+			for _, op := range tt.ops {
+				err = op.run(e, err)
+			}
+
+			if !structEquals(tt.out, err.Error()) {
+				t.Errorf("Expected error message differs:\n %s", diffStr(tt.out, err.Error()))
+
+			}
+
+			e.Print(err, "a")
+			out := "Error: a: " + tt.out + "\n"
+
+			if !structEquals(out, buf.String()) {
+				t.Errorf("Expected printed error message differs:\n %s", diffStr(out, buf.String()))
+			}
+		})
+	}
 }
 
 type testErr struct {
