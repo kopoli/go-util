@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -85,4 +86,17 @@ func (e *ErrorList) Error() string {
 // IsEmpty returns true if the error list is empty
 func (e *ErrorList) IsEmpty() bool {
 	return len(e.errors) == 0
+}
+
+// Fault checks if given err is != nil and if it is runs os.Exit(1). This
+// should be used as a top level handling of errors in the main()
+func Fault(err error, message string, arg ...string) {
+	if err != nil {
+		msg := ""
+		if err != nil {
+			msg = fmt.Sprintf(" (error: %s)", err)
+		}
+		fmt.Fprintf(os.Stderr, "Error: %s%s.%s\n", message, strings.Join(arg, " "), msg)
+		os.Exit(1)
+	}
 }
