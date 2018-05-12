@@ -16,7 +16,14 @@ func VersionString(opts Options) string {
 	progVersion := opts.Get("program-version", "undefined")
 	progTimestamp := opts.Get("program-timestamp", "undefined")
 
-	return fmt.Sprintf("%s: %s\nBuilt %v with: %s/%s for %s/%s",
+	rest := ""
+	if opts.IsSet("program-buildgoos") {
+		rest = fmt.Sprintf("\nBuilt on %s/%s",
+			opts.Get("program-buildgoos", ""),
+			opts.Get("program-buildgoarch", ""))
+	}
+
+	return fmt.Sprintf("%s: %s\nBuilt %v with: %s/%s for %s/%s%s",
 		progName, progVersion, progTimestamp, runtime.Compiler,
-		runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		runtime.Version(), runtime.GOOS, runtime.GOARCH, rest)
 }
