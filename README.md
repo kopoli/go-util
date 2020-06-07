@@ -1,4 +1,4 @@
-NOTE: This is deprecated in favor of (Appkit)[https://github.com/kopoli/appkit].
+NOTE: This is deprecated in favor of [Appkit](https://github.com/kopoli/appkit).
 
 # go-util
 
